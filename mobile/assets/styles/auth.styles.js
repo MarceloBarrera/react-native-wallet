@@ -2,7 +2,7 @@
 import { StyleSheet } from "react-native";
 import { COLORS } from "../../constants/colors";
 
-export const styles = StyleSheet.create({
+export const authStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
@@ -13,6 +13,7 @@ export const styles = StyleSheet.create({
     width: 300,
     height: 310,
     resizeMode: "contain",
+    alignSelf: "center",
   },
   title: {
     fontSize: 32,
