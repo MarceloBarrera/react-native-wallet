@@ -1,6 +1,13 @@
 import { useUser } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
-import { Text, View, Image, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  Alert,
+} from "react-native";
 import { SignOutButton } from "@/components/SignOutButton";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useEffect } from "react";
@@ -8,6 +15,8 @@ import PageLoader from "@/components/PageLoader";
 import { styles } from "@/assets/styles/home.styles";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../constants/colors";
+import { BalanceCard } from "@/components/BalanceCard";
+import { TransactionItem } from "@/components/TransactionItem";
 
 export default function Page() {
   const { user } = useUser();
@@ -23,6 +32,21 @@ export default function Page() {
   if (isLoading) {
     return <PageLoader />;
   }
+
+  const handleDelete = (id) => {
+    Alert.alert(
+      "Delete Transaction",
+      "Are you sure you want to delete this transaction?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => deleteTransaction(id),
+        },
+      ]
+    );
+  };
 
   console.log("Transactions:", transactions);
   console.log("Summary:", summary);
@@ -56,6 +80,21 @@ export default function Page() {
             </View>
           </View>
         </View>
+
+        <BalanceCard summary={summary} />
+
+        <View style={styles.transactionsHeaderContainer}>
+          <Text style={styles.sectionTitle}>Recent Transactions</Text>
+        </View>
+
+        {/* renders lazily */}
+        <FlatList
+          contentContainerStyle={styles.transactionsListContent}
+          data={transactions}
+          renderItem={({ item }) => (
+            <TransactionItem item={item} onDelete={handleDelete} />
+          )}
+        />
       </View>
     </View>
   );
