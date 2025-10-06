@@ -17,6 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../constants/colors";
 import { BalanceCard } from "@/components/BalanceCard";
 import { TransactionItem } from "@/components/TransactionItem";
+import NoTransactionsFound from "@/components/NoTransactionsFound";
 
 export default function Page() {
   const { user } = useUser();
@@ -94,6 +95,8 @@ export default function Page() {
           renderItem={({ item }) => (
             <TransactionItem item={item} onDelete={handleDelete} />
           )}
+          ListEmptyComponent={<NoTransactionsFound />}
+          showsHorizontalScrollIndicator={false}
         />
       </View>
     </View>
