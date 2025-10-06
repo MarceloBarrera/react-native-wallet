@@ -7,10 +7,11 @@ import {
   TouchableOpacity,
   FlatList,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { SignOutButton } from "@/components/SignOutButton";
 import { useTransactions } from "@/hooks/useTransactions";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import PageLoader from "@/components/PageLoader";
 import { styles } from "@/assets/styles/home.styles";
 import { Ionicons } from "@expo/vector-icons";
@@ -25,12 +26,19 @@ export default function Page() {
 
   const { transactions, summary, isLoading, loadData, deleteTransaction } =
     useTransactions(user?.id);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     loadData();
   }, [loadData]);
 
-  if (isLoading) {
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadData();
+    setRefreshing(false);
+  };
+
+  if (isLoading && !refreshing) {
     return <PageLoader />;
   }
 
@@ -97,6 +105,10 @@ export default function Page() {
           )}
           ListEmptyComponent={<NoTransactionsFound />}
           showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       </View>
     </View>
